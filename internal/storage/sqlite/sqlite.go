@@ -9,6 +9,10 @@ import (
 	"github.com/mattn/go-sqlite3"
 )
 
+var (
+	ErrNotFound = errors.New("record not found")
+)
+
 type Storage struct {
 	db *sql.DB
 }
@@ -96,9 +100,17 @@ func (s *Storage) DeleteURL(alias string) error {
 		return fmt.Errorf("%s: prepare statement: %w", op, err)
 	}
 
-	_, err = stmt.Exec(alias)
+	res, err := stmt.Exec(alias)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	num, err := res.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	if num == 0 {
+		return fmt.Errorf("%s: %w", op, storage.ErrURLNotFound)
 	}
 
 	return nil

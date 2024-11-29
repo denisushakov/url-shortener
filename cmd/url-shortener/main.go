@@ -10,6 +10,7 @@ import (
 	"url-shortener/internal/storage/sqlite"
 
 	"url-shortener/internal/http-server/handlers/redirect"
+	"url-shortener/internal/http-server/handlers/url/delete"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -57,8 +58,7 @@ func main() {
 		}))
 
 		r.Post("/", save.New(log, storage))
-		// TODO: add DELETE /{alias}
-		//r.Delete("/{alias}", redirect.New(log, storage))
+		r.Delete("/{alias}", delete.New(log, storage))
 	})
 
 	router.Get("/{alias}", redirect.New(log, storage))
