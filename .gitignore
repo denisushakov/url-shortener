@@ -3,3 +3,5 @@
 .vscode/
 
 /storage/storage.db
+
+/config/local.yaml
